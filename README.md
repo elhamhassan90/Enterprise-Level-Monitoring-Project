@@ -6,7 +6,7 @@ Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Expor
        + Active Directory (Domain Controller)
        + Windows Exporter (via Ansible)
 
- VM2 → Linux Server (192.168.142.100)
+ VM2 → Linux Server (192.168.142.222)
        + Ansible
        + Prometheus
        + Grafana
