@@ -18,15 +18,13 @@ Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Expor
 
 VM1 (Control) — Ansible controller + Prometheus + Grafana
 
-VM2 (AD / DC) — Windows Server running Active Directory + DNS (domain controller)
+VM2 (AD / DC) — Windows Server running Active Directory + DNS (domain controller) + target Windows (Windows_Exporter)
 
 VM3 (Linux node) — target Linux (Node Exporter) — joined to AD
 
 VM4 (Windows node) — target Windows (windows_exporter) — joined to AD
 
 ## Preparing Environment
-Active Directory installatiion and creating domain user ansible and add it to 
-
-all joined to the domain (ITI.LOCAL)
-Ansible will connect to windows servers through winrm service on windows servers (opened ports 5985) 
+Active Directory installatiion and creating domain user ansible and add it to all joined windows nodes to the domain (ITI.LOCAL)
+- Ansible will connect to windows servers through winrm service on windows servers (opened ports 5985) 
 
