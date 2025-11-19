@@ -14,6 +14,15 @@ Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Expor
  VM3 → Linux Server 
        + Node Exporter (via Ansible)
 
+## Quick architecture (what we have)
+
+VM1 (Control) — Ansible controller + Prometheus + Grafana
+
+VM2 (AD / DC) — Windows Server running Active Directory + DNS (domain controller)
+
+VM3 (Linux node) — target Linux (Node Exporter) — joined to AD
+
+VM4 (Windows node) — target Windows (windows_exporter) — joined to AD
 
 ## Preparing Environment
 Active Directory installatiion and creating domain user ansible and add it to 
