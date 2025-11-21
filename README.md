@@ -67,3 +67,28 @@ node2
 ```
 This approach mirrors how large organizations manage hybrid Linux/Windows fleets, ensuring reliability, security, and easier long-term automation.
 
+### 🔹 Preparing Linux Server for Domain Join (Offline Environment)
+
+Before joining the Linux server to the Active Directory domain, the system must have several required packages installed (such as **realmd, sssd, adcli, samba, krb5, chrony**, etc.).
+These packages are necessary for Kerberos authentication, SSSD communication, and the domain join process.
+
+But in our case, the server is **offline** and cannot reach the internet — so **dnf** has no source to download these packages from.
+
+Because of this, we need to create a **Local Repository**.
+
+Since the OS was installed from an **ISO image**, this ISO already contains all the packages that the server may need.
+So the solution is:
+
+1. **Mount the ISO** (the same ISO used during OS installation)
+2. **Create a Local Repository file** that points to the mounted ISO
+3. This way, when the server needs any package, **dnf will search inside the local ISO repository instead of the internet**
+
+In short:
+
+> The server is offline → dnf has no external repos
+> We mount the OS ISO → all required packages are inside it
+> We create a Local Repo pointing to the mounted ISO
+> Now dnf can install all packages needed for the Domain Join process
+
+
+
