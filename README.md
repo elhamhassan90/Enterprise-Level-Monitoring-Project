@@ -92,3 +92,32 @@ In short:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**
+Before performing the domain join, I also need to change the server hostname.
+This is important because the hostname is what gets registered inside **DNS** and inside **Active Directory**, so it must be correct **before** joining the domain.
+
+I also need to configure the **time, timezone, and NTP** properly.
+Kerberos authentication is very strict with time, and the domain join will fail if the server time is not synchronized with the Domain Controller.
+So the time must be fully correct before running the join command.
+**
+
+
+
+
+
