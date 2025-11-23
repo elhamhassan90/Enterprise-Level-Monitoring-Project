@@ -94,6 +94,13 @@ In short:
 
 
 
+> dnf config-manager --enable Local-BaseOS Local-AppStream
+
+
+
+
+
+
 
 
 
