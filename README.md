@@ -216,10 +216,9 @@ su - ansible
 ssh-keygen -t rsa -b 4096
 ssh-copy-id ansible@node1.iti.local  
 sudo nano /etc/ansible/hosts
-
-"
+==
 [linux_nodes]
 node1
-"
+==
 ansible -m ping linux_nodes
 ```
