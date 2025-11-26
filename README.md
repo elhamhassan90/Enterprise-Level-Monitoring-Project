@@ -151,6 +151,7 @@ gpgcheck=0
 
 ==
 yum repolist
+#dnf config-manager --disable baseos appstream extras-common
 
 ======================================
 ##change hostname
