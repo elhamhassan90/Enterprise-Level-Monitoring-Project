@@ -124,6 +124,57 @@ Kerberos authentication is very strict with time, and the domain join will fail 
 So the time must be fully correct before running the join command.
 **
 
+###mount iso
+-----------------------------------
+df -h
+mount /dev/sr0 /media/
+ls /media
+
+
+====================================
+##create local repo
+--------------------------------------
+cd /etc/yum.repos.d/
+nano local.repo
+==
+[Appstream]
+name=appstream
+baseurl=file:///media/AppStream/
+enabled=1
+gpgcheck=0
+
+[BaseOs]
+name=baseos
+baseurl=file:///media/BaseOS/
+enabled=1
+gpgcheck=0
+
+==
+yum repolist
+
+======================================
+##change hostname
+-------------------------------------
+hostnamectl set-hostname Prometheus
+bash
+
+
+##sync time from 192.168.142.100
+------------------------------------
+#tar xfvz tzdata2024a.tar.gz
+tar xfvz tzdata2025b.tar.gz
+#zic Africa
+zic africa
+nano /etc/chrony.conf
+==
+server 192.168.142.100 iburst
+==
+systemctl enable --now chronyd.service
+systemctl restart chronyd.service
+timedatectl
+chronyc sources
+timedatectl
+
 
 
 
