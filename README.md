@@ -235,3 +235,7 @@ windows exporter   install
 
 windows_exporter-0.31.3-amd64.msi
 https://github.com/prometheus-community/windows_exporter/releases/download/v0.31.3/windows_exporter-0.31.3-amd64.msi
+
+sudo mkdir -p /opt/windows_exporter
+sudo mv /root/windows_exporter-0.31.3-amd64.msi /opt/windows_exporter/windows_exporter.msi
+
