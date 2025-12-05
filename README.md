@@ -186,12 +186,12 @@ then the server is ready to join to the domain iti.local
 ##join the domain
 ----------------------------------
 yum install sssd realmd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python-utils -y
-realm join -v --user=elham.hassan-AD egyptpost.local
+realm join -v --user=elham iti.local
 realm list
 nano /etc/sssd/sssd.conf
 
 ==
-default_domain_suffix = egyptpost.local
+default_domain_suffix = iti.local
 dyndns_update = true
 dyndns_refresh_interval = 43200
 dyndns_update_ptr = true
