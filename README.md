@@ -214,7 +214,7 @@ sudo yum update -y   # update system
 sudo yum install epel-release -y
 sudo yum install ansible -y
 ansible --version
-sudo useradd ansible1 #this user is special to ansible for ssh 
+sudo useradd ansible1 #this user is special to ansible for ssh (linux servers) 
 sudo passwd ansible1
 #to grant ansible1 usr sudo permissions with no password
 echo "ansible1 ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ansible
