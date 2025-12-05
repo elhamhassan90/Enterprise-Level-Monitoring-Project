@@ -192,8 +192,9 @@ nano /etc/sssd/sssd.conf
 
 ==
 default_domain_suffix = iti.local
-dyndns_update = true
-dyndns_refresh_interval = 43200
+dyndns_update = truedyndns_update = True
+ad_hostname = %h.%d               # hostname.full_domain
+dyndns_refresh_interval = 43200   #to_renew_dns_record_every_12_hours
 dyndns_update_ptr = true
 dyndns_auth = GSS-TSIG
 ==
