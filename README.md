@@ -275,6 +275,90 @@ pip install --user --no-index --find-links=. pywinrm   #--no-index option tells 
 pip show pywinrm | grep Version
 ```
 
+## Separate Inventory for Windows Hosts
+
+This project keeps **Linux and Windows inventories separate** for clarity and security.
+
+### Create a dedicated folder for Windows inventory
+On your Ansible control server, create a new folder for all Windows hosts:
+```
+su - ansible1
+cd
+mkdir windows-serevrs
+cd windows-servers
+
+```
+### Create a Windows Inventory File
+
+Inside windows-servers, create your inventory file, e.g., inventory.ini:
+```
+nano inventory.ini
+===
+[all:vars]
+ansible_user=iti\ansible
+ansible_password="{{ ansible_password }}"
+ansible_connection=winrm
+ansible_winrm_port=5985
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_transport=ntlm
+
+[DomainController]
+pdc ansible_host=192.168.142.100
+
+[windows_nodes]
+winsrv1 ansible_host=192.168.142.150
+===
+```
+
+Sensitive credentials like ansible_password are referenced via Ansible Vault.
+
+This ensures no plain passwords are stored in the inventory.
+
+3️⃣ 🔐 Handling Vault Password: Create, Use, and Secure
+
+This project uses Ansible Vault to protect sensitive data and credentials.
+Follow these practical steps to create a vault password file, configure ansible.cfg, and run playbooks safely.
+
+Step 1: Create a Vault Password File
+# Create a file containing only the vault password (replace <your-password>)
+echo '<your-password>' > ~/windows-servers/.vault_pass.txt
+
+# Restrict file permissions so only the Ansible user can read it
+chmod 600 ~/windows-servers/.vault_pass.txt
+
+Step 2: Configure Ansible to Use the Vault Password File
+
+In your project’s ansible.cfg (or create one inside windows-servers), add:
+```
+nano ansible.cfg
+===
+[defaults]
+vault_password_file = ~/windows-servers/.vault_pass.txt
+===
+```
+Step 3: Create or Edit Vaulted Files
+# Create a new vaulted file for storing credentials
+ansible-vault create group_vars/all/vault.yml
+
+# Edit an existing vaulted file
+ansible-vault edit group_vars/all/vault.yml
+
+
+Store sensitive data like ansible_password in these vaulted files.
+
+Reference them in your inventory using {{ ansible_password }}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
