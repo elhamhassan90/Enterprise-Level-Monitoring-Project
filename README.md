@@ -223,6 +223,16 @@ sudo passwd ansible1
 echo "ansible1 ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ansible1
 su - ansible1
 ssh-keygen -t rsa -b 4096
+```
+In this environment, Linux hosts are not automatically registered in DNS.
+To avoid unnecessary DNS changes and approval workflows, hostname resolution
+is handled locally using /etc/hosts, while Ansible inventory relies on hostnames only.
+
+```
+sudo nanao /etc/hosts
+==
+192.168.142.225    node1     node1
+==
 ssh-copy-id ansible1@node1.iti.local  
 sudo nano /etc/ansible1/hosts
 ==
