@@ -272,7 +272,7 @@ On the offline Ansible control server:
 cd /tmp/pywinrm_offline
 
 pip install --user --no-index --find-links=. pywinrm   #--no-index option tells pip to avoid looking online, and --find-links= points to the local folder containing the packages.
-pip show pywinrm
+pip show pywinrm | grep Version
 ```
 
 
