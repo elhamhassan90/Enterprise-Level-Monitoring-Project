@@ -341,13 +341,13 @@ vault_password_file = /home/ansible1/windows-serevrs/.vault_pass.txt
 ===
 ```
 Step 3: Create or Edit Vaulted Files
-# Create a new vaulted file for storing credentials
+### Create a new vaulted file for storing credentials
 ```
-ansible-vault create group_vars/all/vault.yml
+ansible-vault create /home/ansible1/windows-serevrs/group_vars/all/vault.yml
 ```
-# Edit an existing vaulted file
+### Edit an existing vaulted file
 ```
-ansible-vault edit group_vars/all/vault.yml
+ansible-vault edit /home/ansible1/windows-serevrs/group_vars/all/vault.yml
 ```
 
 Store sensitive data like ansible_password in these vaulted files.
