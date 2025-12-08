@@ -220,7 +220,7 @@ ansible --version
 ```
 ## Prerequisites
 
-Before running the Ansible playbooks, ensure the following:
+Before running the Ansible playbooks, ensure the following **on each target server**:
 
 1. **Create a local user on all Linux servers**  
    A local user named `ansible1` must exist on each target server. This user will be used by Ansible to connect and execute tasks.
@@ -254,12 +254,25 @@ sudo nano /etc/ansible1/hosts
 [linux_nodes]
 node1
 ==
-ansible -m ping linux_nodes
+ansible -m ping linux_nodes    #for test
 #pywinrm install (package requird for linux to deal with windows)
 sudo apt install python3-pip -y
-pip install "pywinrm>=0.3.0"
-pip show pywinrm
+```
+as serevr is **ofline** you can download PyWinRM and its dependencies on a device with internet access, then transfer and install it on the offline server.
 
+so on your online device
+```
+mkdir pywinrm_offline   # Create a folder to store PyWinRM packages
+cd pywinrm_offline
+pip download pywinrm    # Download PyWinRM and its dependencies
+scp *.whl ansible1@192.168.142.222:/tmp/pywinrm_offline/          # Transfer all downloaded files to the offline server
+```
+On the offline Ansible control server:
+```
+cd /tmp/pywinrm_offline
+
+pip install --user --no-index --find-links=. pywinrm   #--no-index option tells pip to avoid looking online, and --find-links= points to the local folder containing the packages.
+pip show pywinrm
 ```
 
 
