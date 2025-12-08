@@ -217,10 +217,25 @@ sudo yum update -y   # update system
 sudo yum install epel-release -y
 sudo yum install ansible -y
 ansible --version
+```
+## Prerequisites
+
+Before running the Ansible playbooks, ensure the following:
+
+1. **Create a local user on all Linux servers**  
+   A local user named `ansible1` must exist on each target server. This user will be used by Ansible to connect and execute tasks.
+
+2. **Set a secure password for the user**  
+   Make sure to set a strong password for `ansible1`. This password can be used temporarily if password-based authentication is enabled, but it is recommended to configure **SSH key-based authentication** for enhanced security.
+
+3. **Grant sudo privileges**  
+   The `ansible1` user must have passwordless sudo access to perform administrative tasks. You can add the following line to the sudoers file using `visudo`:
+
+```
 sudo useradd ansible1 #this user is special to ansible for ssh (linux servers) 
 sudo passwd ansible1
 #to grant ansible1 usr sudo permissions with no password
-echo "ansible1 ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ansible1
+echo "ansible1 ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ansible1    #or can be added directly to /etc/suduoers
 su - ansible1
 ssh-keygen -t rsa -b 4096
 ```
@@ -229,11 +244,11 @@ To avoid unnecessary DNS changes and approval workflows, hostname resolution
 is handled locally using /etc/hosts, while Ansible inventory relies on hostnames only.
 
 ```
-sudo nanao /etc/hosts
+sudo nano /etc/hosts
 ==
 192.168.142.225    node1     node1
 ==
-ssh-copy-id ansible1@node1.iti.local  
+ssh-copy-id ansible1@node1  
 sudo nano /etc/ansible1/hosts
 ==
 [linux_nodes]
