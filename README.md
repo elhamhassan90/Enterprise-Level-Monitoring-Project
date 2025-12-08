@@ -314,35 +314,41 @@ Sensitive credentials like ansible_password are referenced via Ansible Vault.
 
 This ensures no plain passwords are stored in the inventory.
 
-3️⃣ 🔐 Handling Vault Password: Create, Use, and Secure
+## Handling Vault Password: Create, Use, and Secure
 
 This project uses Ansible Vault to protect sensitive data and credentials.
 Follow these practical steps to create a vault password file, configure ansible.cfg, and run playbooks safely.
 
 Step 1: Create a Vault Password File
-# Create a file containing only the vault password (replace <your-password>)
-echo '<your-password>' > ~/windows-servers/.vault_pass.txt
+### Create a file containing only the vault password (replace <your-password>)
+```
+echo '<your-password>' > /home/ansible1/windows-serevrs/.vault_pass.txt
+```
 
-# Restrict file permissions so only the Ansible user can read it
-chmod 600 ~/windows-servers/.vault_pass.txt
+### Restrict file permissions so only the Ansible user can read it
+```
+chmod 600 /home/ansible1/windows-serevrs/.vault_pass.txt
+```
 
 Step 2: Configure Ansible to Use the Vault Password File
 
 In your project’s ansible.cfg (or create one inside windows-servers), add:
 ```
-nano ansible.cfg
+nano /home/ansible1/windows-serevrs/ansible.cfg
 ===
 [defaults]
-vault_password_file = ~/windows-servers/.vault_pass.txt
+vault_password_file = /home/ansible1/windows-serevrs/.vault_pass.txt
 ===
 ```
 Step 3: Create or Edit Vaulted Files
 # Create a new vaulted file for storing credentials
+```
 ansible-vault create group_vars/all/vault.yml
-
+```
 # Edit an existing vaulted file
+```
 ansible-vault edit group_vars/all/vault.yml
-
+```
 
 Store sensitive data like ansible_password in these vaulted files.
 
