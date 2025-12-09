@@ -308,6 +308,7 @@ pdc ansible_host=192.168.142.100
 [windows_nodes]
 winsrv1 ansible_host=192.168.142.150
 ===
+ansible windows_nodes -m win_ping --ask-vault-pass #for_test
 ```
 
 Sensitive credentials like ansible_password are referenced via Ansible Vault.
