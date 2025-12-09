@@ -308,7 +308,6 @@ pdc ansible_host=192.168.142.100
 [windows_nodes]
 winsrv1 ansible_host=192.168.142.150
 ===
-ansible windows_nodes -m win_ping --ask-vault-pass #for_test
 ```
 
 Sensitive credentials like ansible_password are referenced via Ansible Vault.
@@ -358,6 +357,9 @@ ansible-vault edit /home/ansible1/windows-servers/group_vars/all/vault.yml
 Store sensitive data like ansible_password in these vaulted files.
 
 Reference them in your inventory using {{ ansible_password }}
+```
+ansible windows_nodes -m win_ping --ask-vault-pass #for_test
+```
 
 
 
