@@ -361,8 +361,7 @@ Reference them in your inventory using {{ ansible_password }}
 ansible windows_nodes -m win_ping --ask-vault-pass #for_test
 ```
 
-
-
+![Ping Test Succeeded](images/PingTest.png)
 
 
 
