@@ -302,8 +302,8 @@ ansible_winrm_port=5985
 ansible_winrm_server_cert_validation=ignore
 ansible_winrm_transport=ntlm
 
-[DomainController]
-pdc ansible_host=192.168.142.100
+#[DomainController]
+#pdc ansible_host=192.168.142.100
 
 [windows_nodes]
 winsrv1 ansible_host=192.168.142.150
