@@ -1,4 +1,4 @@
-# nterprise-Level-Monitoring-Project
+# Enterprise-Level-Monitoring-Project
 Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation
 
 ## Architecure
@@ -284,7 +284,7 @@ On your Ansible control server, create a new folder for all Windows hosts:
 ```
 su - ansible1
 cd
-mkdir windows-serevrs
+mkdir windows-servers
 cd windows-servers
 
 ```
@@ -322,32 +322,36 @@ Follow these practical steps to create a vault password file, configure ansible.
 Step 1: Create a Vault Password File
 ### Create a file containing only the vault password (replace <your-password>)
 ```
-echo '<your-password>' > /home/ansible1/windows-serevrs/.vault_pass.txt
+echo '<your-password>' > /home/ansible1/windows-servers/.vault_pass.txt
 ```
 
 ### Restrict file permissions so only the Ansible user can read it
 ```
-chmod 600 /home/ansible1/windows-serevrs/.vault_pass.txt
+chmod 600 /home/ansible1/windows-servers/.vault_pass.txt
 ```
 
 Step 2: Configure Ansible to Use the Vault Password File
 
 In your project’s ansible.cfg (or create one inside windows-servers), add:
 ```
-nano /home/ansible1/windows-serevrs/ansible.cfg
+nano /home/ansible1/windows-servers/ansible.cfg
 ===
 [defaults]
-vault_password_file = /home/ansible1/windows-serevrs/.vault_pass.txt
+vault_password_file = /home/ansible1/windows-servers/.vault_pass.txt
+inventory = /home/ansible1/windows-servers/inventory.ini
 ===
 ```
 Step 3: Create or Edit Vaulted Files
 ### Create a new vaulted file for storing credentials
 ```
-ansible-vault create /home/ansible1/windows-serevrs/group_vars/all/vault.yml
+ansible-vault create /home/ansible1/windows-servers/group_vars/all/vault.yml
+===
+ansible_password: "DOMAIN_USER_REAL_PASSWORD"
+===
 ```
 ### Edit an existing vaulted file
 ```
-ansible-vault edit /home/ansible1/windows-serevrs/group_vars/all/vault.yml
+ansible-vault edit /home/ansible1/windows-servers/group_vars/all/vault.yml
 ```
 
 Store sensitive data like ansible_password in these vaulted files.
