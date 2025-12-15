@@ -371,7 +371,93 @@ ansible windows_nodes -m win_ping --ask-vault-pass #for_test
 
 
 
+to install prometheus on linux vm 
+```
+sudo useradd --no-create-home --shell /bin/false prometheus
+sudo mkdir /etc/prometheus
+sudo mkdir /var/lib/prometheus
+sudo chown prometheus:prometheus /var/lib/prometheus
 
+cd /tmp/
+wget https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz
+-------------------------------------------------------------------------------------------------------
+#or you can download it from 
+https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz
+#and then transfer it to the server 
+--------------------------------------------------------------------------------------------------------
+
+tar -xvf prometheus-2.35.0.linux-amd64.tar.gz
+cd prometheus-2.35.0.linux-amd64/
+
+sudo mv console* /etc/prometheus 
+sudo mv prometheus.yml /etc/prometheus
+sudo chown -R prometheus:prometheus /etc/prometheus
+sudo mv prometheus /usr/local/bin/
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+
+sudo vi /etc/systemd/system/prometheus.service
+============================================================
+[Unit]
+Description=prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+--config.file /etc/prometheus/prometheus.yml \
+--storage.tsdb.path /var/lib/prometheus/ \
+--web.console.templates=/etc/prometheus/consoles \
+--web.console.libraries=/etc/prometheus/console_libraries
+
+execstart=/usr/local/bin/prometheus \
+  --config.file /etc/prometheus/prometheus.yml \
+  --storage.tsdb.path /var/lib/prometheus/ \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries
+
+
+[Install]
+WantedBy=multi-user.target
+
+
+8888
+
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus/ \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries
+
+[Install]
+WantedBy=multi-user.target
+
+==============================================================
+sudo semanage fcontext -a -t bin_t "/usr/local/bin/prometheus"
+sudo restorecon -v /usr/local/bin/prometheus
+sudo setenforce 1
+
+sudo systemctl daemon-reload
+sudo systemctl start prometheus
+sudo systemctl enable Prometheus
+###open-needed-port-9090
+sudo systemctl status prometheus.servicesudo firewall-cmd --add-port=9090/tcp --permanent
+sudo firewall-cmd --reload
+
+
+## http://http://localhost:9090
+```
 
 
 windows exporter   install  
