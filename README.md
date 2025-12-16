@@ -398,34 +398,6 @@ sudo chown prometheus:prometheus /usr/local/bin/prometheus
 sudo vi /etc/systemd/system/prometheus.service
 ============================================================
 [Unit]
-Description=prometheus
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-User=prometheus
-Group=prometheus
-Type=simple
-ExecStart=/usr/local/bin/prometheus \
---config.file /etc/prometheus/prometheus.yml \
---storage.tsdb.path /var/lib/prometheus/ \
---web.console.templates=/etc/prometheus/consoles \
---web.console.libraries=/etc/prometheus/console_libraries
-
-execstart=/usr/local/bin/prometheus \
-  --config.file /etc/prometheus/prometheus.yml \
-  --storage.tsdb.path /var/lib/prometheus/ \
-  --web.console.templates=/etc/prometheus/consoles \
-  --web.console.libraries=/etc/prometheus/console_libraries
-
-
-[Install]
-WantedBy=multi-user.target
-
-
-8888
-
-[Unit]
 Description=Prometheus
 Wants=network-online.target
 After=network-online.target
@@ -436,25 +408,26 @@ Group=prometheus
 Type=simple
 ExecStart=/usr/local/bin/prometheus \
   --config.file=/etc/prometheus/prometheus.yml \
-  --storage.tsdb.path=/var/lib/prometheus/ \
+  --storage.tsdb.path=/var/lib/prometheus \
   --web.console.templates=/etc/prometheus/consoles \
   --web.console.libraries=/etc/prometheus/console_libraries
 
+Restart=always
+
 [Install]
 WantedBy=multi-user.target
-
 ==============================================================
 sudo semanage fcontext -a -t bin_t "/usr/local/bin/prometheus"
 sudo restorecon -v /usr/local/bin/prometheus
 sudo setenforce 1
-
-sudo systemctl daemon-reload
-sudo systemctl start prometheus
-sudo systemctl enable Prometheus
 ###open-needed-port-9090
 sudo systemctl status prometheus.servicesudo firewall-cmd --add-port=9090/tcp --permanent
 sudo firewall-cmd --reload
 
+sudo systemctl daemon-reload
+sudo systemctl enable prometheus
+sudo systemctl start prometheus
+sudo systemctl status prometheus
 
 ## http://http://localhost:9090
 ```
