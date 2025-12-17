@@ -429,7 +429,18 @@ sudo systemctl enable prometheus
 sudo systemctl start prometheus
 sudo systemctl status prometheus
 
-## http://http://localhost:9090
+## http://http://localhost:9090 #for_test_on_any_browser
+```
+![Prometheus Test Succeeded](images/prometheus_succeedded.png)
+
+To Install Grafana follow this steps 
+download grafana rpm package for redhat and centos servers form 
+https://dl.grafana.com/grafana-enterprise/release/12.3.1/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
+and transfer it to your server then to the path /tmp/
+```
+cd /tmp/ #the offline package must be located to any path and go to that path and use rpm to install from a file
+sudo rpm --install --verbose -h /tmp/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
+
 ```
 
 
