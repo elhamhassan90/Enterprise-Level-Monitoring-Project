@@ -440,12 +440,17 @@ and transfer it to your server then to the path /tmp/
 ```
 cd /tmp/ #the offline package must be located to any path and go to that path and use rpm to install from a file
 sudo rpm --install --verbose -h /tmp/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
+
+sudo semanage port -a -t http_port_t -p tcp 3000
+sudo firewall-cmd --add-port=3000/tcp --permanent
+sudo firewall-cmd --reload
+
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable grafana-server.service
 ### You can start grafana-server by executing
 sudo /bin/systemctl start grafana-server.service
 
-#http:192.168.142.230:3000    #for test grafana write this ip on the browser of any server joined the domain 
+#http:192.168.142.230:3000    #for test grafana write this ip on the browser of any server joined the domain the default username:admin password:admin
 
 ```
 
