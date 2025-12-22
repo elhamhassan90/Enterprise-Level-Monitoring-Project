@@ -454,6 +454,17 @@ sudo /bin/systemctl start grafana-server.service
 
 ```
 
+open port 9182 on windows servers for prometheus to scrape metrics from windows servers 
+open powershell as administrator and write :
+```
+New-NetFirewallRule `
+  -DisplayName "Prometheus Only 9182" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 9182 `
+  -RemoteAddress 192.168.142.230 `
+  -Action Allow
+```
 
 windows exporter   install  
 
