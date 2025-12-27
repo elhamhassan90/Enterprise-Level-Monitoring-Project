@@ -1,18 +1,52 @@
 # Enterprise-Level-Monitoring-Project
 Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts 
 
-## Architecure (what we have)
+## Architecture
 
-VM1 (Control) [192.168.142.222] — Ansible controller 
+Our monitoring project consists of the following virtual machines (VMs) and their roles:
 
-VM2 (AD / DC)[192.168.142.100] — Windows Server running Active Directory + DNS (domain controller) 
+- **VM1 (Control)** [192.168.142.222] — Ansible controller for managing Linux & Windows nodes.
+- **VM2 (AD / DC)** [192.168.142.100] — Windows Server running Active Directory + DNS (Domain Controller).
+- **VM3 (Linux node)** [192.168.142.225] — Target Linux node with Node Exporter installed, joined to the AD domain.
+- **VM4 (Windows node)** [192.168.142.150] — Target Windows node with Windows Exporter installed, joined to the AD domain.
+- **VM5 (Monitor)** [192.168.142.230] — Monitoring server running Prometheus + Grafana.
 
-VM3 (Linux node) [192.168.142.225] — target Linux (Node Exporter) — joined to AD
+```
+> 💡 **Topology Diagram (Visual + Functional)**
 
-VM4 (Windows node) [192.168.142.150] — target Windows (windows_exporter) — joined to AD
+                       +----------------------+
+                       |     VM5: Monitor     |
+                       | 192.168.142.230     |
+                       | Prometheus + Grafana |
+                       +----------+-----------+
+                                  ^
+                                  |
+                  Scrapes Metrics |
+                                  |
+         ------------------------------------------------
+         |                                              |
++--------v---------+                            +-------v--------+
+|   VM3: Linux     |                            |  VM4: Windows  |
+| 192.168.142.225  |                            |192.168.142.150|
+| Node Exporter    |                            |Windows Exporter|
++--------+---------+                            +-------+--------+
+         ^                                              ^
+         |                                              |
+         | SSH / WinRM                                  | WinRM
+         |                                              |
++--------v---------+                            +-------v--------+
+|   VM1: Control   |                            |   VM2: AD / DC |
+| 192.168.142.222 |----------------------------|192.168.142.100 |
+|  Ansible Server  |       Domain Auth          | Active Directory|
++-----------------+                            +-----------------+
 
-VM5 (Monitor) [192.168.142.230] —  Prometheus + Grafana
+Legend:
+- Arrows indicate communication flow:
+   * VM1 connects via SSH to Linux nodes and via WinRM to Windows nodes
+   * Prometheus on VM5 scrapes metrics from all target nodes
+   * Domain Controller (VM2) provides AD authentication for all nodes
 
+```
 ## Preparing Environment
 **Preparing Windows Vms**
 Active Directory installatiion, joining windows server to domain (ITI.LOCAL) and creating domain user ansible   
