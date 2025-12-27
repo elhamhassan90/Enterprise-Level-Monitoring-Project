@@ -455,7 +455,8 @@ sudo /bin/systemctl start grafana-server.service
 ```
 #### To install windows_exporter on windows servers via master ansible server by using ansible playbook
 firstly on your online device download **windows_exporter-0.25.0-amd64.msi** from https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-amd64.msi 
-and transfer it to the server as it is  offline and use this **/home/ansible1/windows-servers/setup-we.yaml** playbook to install it to windows servers
+and transfer it to the server as it is offline and use this 
+**/home/ansible1/windows-servers/setup-we.yaml** playbook to install it to windows servers
 ```
 - name: Simple MSI Installation from C:\
   hosts: all
@@ -585,4 +586,11 @@ sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
 
 echo "Node Exporter has been installed and started."
+```
+##### Note that you have to install node_exporter-1.3.1.linux-amd64.tar.gz on master ansible server mannually
+#### open port 9100 on all LINUX servers for prometheus to scrape metrics from windows servers
+```
+sudo firewall-cmd --zone=public --add-port=9100/tcp --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-ports
 ```
