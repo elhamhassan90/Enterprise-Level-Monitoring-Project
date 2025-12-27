@@ -16,7 +16,7 @@ Our monitoring project consists of the following virtual machines (VMs) and thei
 
                        +----------------------+
                        |     VM5: Monitor     |
-                       | 192.168.142.230     |
+                       | 192.168.142.230      |
                        | Prometheus + Grafana |
                        +----------+-----------+
                                   ^
@@ -38,7 +38,7 @@ Our monitoring project consists of the following virtual machines (VMs) and thei
 |   VM1: Control   |                            | VM2: AD / DC + SMTP   |
 | 192.168.142.222  |----------------------------|192.168.142.100        |
 |  Ansible Server  |       Domain Auth          |Active Directory & SMTP|
-+-----------------+                            +------------------------+
++------------------+                            +-----------------------+
 
 **Legend:**
 - Arrows indicate communication flow:
@@ -104,33 +104,47 @@ node2
 
 ### 🔹 Preparing Linux Server for Domain Join (Offline Environment)
 
-Before joining the Linux server to the Active Directory domain, the system must have several required packages installed (such as **realmd, sssd, adcli, samba, krb5, chrony**, etc.).
-These packages are necessary for Kerberos authentication, SSSD communication, and the domain join process.
+Before joining the Linux server to the Active Directory (AD) domain, the system must have several required packages installed, such as:
 
-But in our case, the server is **offline** and cannot reach the internet — so **dnf** has no source to download these packages from.
+- `realmd`
+- `sssd`
+- `adcli`
+- `samba`
+- `krb5-workstation`
+- `chrony`
+- `oddjob` / `oddjob-mkhomedir`
+- `openldap-clients`
+- `policycoreutils-python-utils`
 
-Because of this, we need to create a **Local Repository**.
+These packages are necessary for **Kerberos authentication**, **SSSD communication**, and the **domain join process**.
 
-Since the OS was installed from an **ISO image**, this ISO already contains all the packages that the server may need.
-So the solution is:
+> **Note:** In this project, the Linux servers are **offline** and cannot access the internet. Therefore, `dnf` has no external repositories to download packages.
 
-1. **Mount the ISO** (the same ISO used during OS installation)
-2. **Create a Local Repository file** that points to the mounted ISO
-3. This way, when the server needs any package, **dnf will search inside the local ISO repository instead of the internet**
+#### Creating a Local Repository from ISO
+
+Since the OS was installed from an **ISO image**, all required packages are already available locally. To enable installation without internet access, we need to create a **Local Repository**:
+
+1. **Mount the ISO** (the same ISO used during OS installation)  
+2. **Create a Local Repository file** pointing to the mounted ISO  
+3. When the server needs any package, `dnf` will install it directly from the ISO instead of fetching it online  
 
 In short:
 
-> The server is offline → dnf has no external repos
-> We mount the OS ISO → all required packages are inside it
-> We create a Local Repo pointing to the mounted ISO
-> Now dnf can install all packages needed for the Domain Join process
+- The server is offline → `dnf` cannot access external repos  
+- Mount the OS ISO → all required packages are available locally  
+- Create a Local Repo pointing to the ISO → `dnf` installs packages from it
 
+#### Enable Local Repositories
 
+To activate the local repositories from the mounted ISO, run:
 
+```bash
+dnf config-manager --enable Local-BaseOS Local-AppStream
 
-
-> dnf config-manager --enable Local-BaseOS Local-AppStream
-
+HELLO
+```
+dnf config-manager --enable Local-BaseOS Local-AppStream
+```
 
 
 
