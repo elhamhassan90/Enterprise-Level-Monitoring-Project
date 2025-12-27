@@ -201,8 +201,7 @@ chronyc sources
 timedatectl
 ```
 
-
-then the server is ready to join to the domain iti.local
+Once the hostname, time, and NTP are correctly configured, the server is ready to **join the domain `iti.local`**.
 
 ```
 ##join the domain
@@ -225,14 +224,13 @@ dyndns_auth = GSS-TSIG
 systemctl restart sssd
 realm list
 ```
+We will perform the same steps for the other Linux VM (node1) to join it to the domain.
 
-we will do the same for the other vm (node1) and join it the domain 
+### Installing Ansible on the Linux Controller VM
 
-installing ansible on vm linux (controller)
+In a standard enterprise setup using RHEL servers, **Ansible Core** can be installed directly from the mounted RHEL installation ISO, as the required packages are already included.
 
-In a standard enterprise setup using RHEL servers, Ansible Core can be installed directly from the mounted RHEL installation ISO, since the required packages are already included.
-
-However, in this project I am using CentOS Stream 9, whose installation ISO does not provide Ansible Core. Therefore, I installed Ansible Core from the EPEL repository right after creating the VM, before proceeding with the domain join and the rest of the configuration.
+However, in this project we are using **CentOS Stream 9**, whose installation ISO does **not** provide Ansible Core. Therefore, we installed Ansible Core from the **EPEL repository** immediately after creating the VM, before proceeding with the domain join and the rest of the configuration.
 
 ```
 sudo yum update -y   # update system 
@@ -261,6 +259,32 @@ echo "ansible1 ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ansible1    #o
 su - ansible1
 ssh-keygen -t rsa -b 4096
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 In this environment, Linux hosts are not automatically registered in DNS.
 To avoid unnecessary DNS changes and approval workflows, hostname resolution
 is handled locally using /etc/hosts, while Ansible inventory relies on hostnames only.
