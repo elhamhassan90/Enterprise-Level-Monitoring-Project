@@ -1,0 +1,34 @@
+- name: Deploy Node Exporter using script on RHEL 6
+  hosts: DATABASE8
+  become: yes
+  tasks:
+    - name: Check if Red Hat 6
+      fail:
+        msg: "This playbook is designed for RHEL 6 only"
+      when: ansible_distribution_major_version != "6"
+
+    - name: Copy tar file to worker
+      copy:
+        src: /home/ans/node-exporter/node_exporter-1.3.1.linux-amd64.tar.gz
+        dest: /tmp/
+        mode: 0644
+
+    - name: Copy and make script executable
+      copy:
+        src: /home/ans/node-exporter/node-script-red6.sh
+        dest: /tmp/node-script-red6.sh
+        mode: 0755
+
+    - name: Execute setup script
+      shell: /bin/bash /tmp/node-script-red6.sh
+      args:
+        chdir: /tmp
+
+    - name: Check if service is running
+      shell: service node_exporter status
+      register: service_status
+      failed_when: false
+
+    - name: Show service status
+      debug:
+        var: service_status.stdout

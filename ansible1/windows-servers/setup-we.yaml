@@ -1,0 +1,61 @@
+- name: Simple MSI Installation from C:\
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Copy MSI file to Windows client C:\ 
+      win_copy:
+        src: /home/ansible1/windows-servers/windows_exporter-0.25.0-amd64.msi
+        dest: C:\windows_exporter-0.25.0-amd64.msi
+        force: yes
+        backup: yes
+      register: copy_operation
+
+    - name: Install Windows Exporter from C:\
+      win_shell: |
+        # Verify MSI file exists
+        $msiPath = "C:\windows_exporter-0.25.0-amd64.msi"
+        if (-not (Test-Path $msiPath)) {
+            Write-Error "MSI file not found at $msiPath"
+            exit 1
+        }
+        
+        Write-Host "Installing Windows Exporter from $msiPath"
+        
+        # Install the MSI
+        $process = Start-Process "msiexec" -ArgumentList @(
+            "/i", "C:\windows_exporter-0.25.0-amd64.msi",
+            "/quiet",
+            "/norestart",
+            "ENABLED_COLLECTORS=cpu,memory,net,service,process,logical_disk,os,iis",
+            "LISTEN_PORT=9182"
+        ) -Wait -PassThru -NoNewWindow
+        
+        Write-Host "Installation completed with exit code: $($process.ExitCode)"
+        
+        # Wait and start service
+        Start-Sleep -Seconds 10
+        Start-Service -Name "windows_exporter" -ErrorAction SilentlyContinue
+        
+        # Configure firewall
+        $firewall = Get-NetFirewallRule -DisplayName "Windows Exporter" -ErrorAction SilentlyContinue
+        if (-not $firewall) {
+            New-NetFirewallRule -DisplayName "Windows Exporter" -Direction Inbound -Protocol TCP -LocalPort 9182 -Action Allow
+        }
+        
+        # Verify installation
+        $service = Get-Service -Name "windows_exporter" -ErrorAction SilentlyContinue
+        if ($service -and $service.Status -eq 'Running') {
+            Write-Host "SUCCESS: Windows Exporter installed and running"
+            exit 0
+        } else {
+            Write-Error "Installation verification failed"
+            exit 1
+        }
+      args:
+        executable: powershell
+      register: installation
+
+    - name: Show installation result
+      debug:
+        var: installation.stdout_lines

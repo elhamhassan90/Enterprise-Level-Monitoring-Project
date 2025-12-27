@@ -1,0 +1,16 @@
+- name: installing node-exporter for linux servers for monitoring
+  hosts: all
+  tasks:
+    - name: Copy tar file from ansible to worker
+      copy:
+        src: /home/ansible1/node-exporter/node_exporter-1.3.1.linux-amd64.tar.gz
+        dest: /tmp/
+
+    - name: Copy script file  to worker
+      copy:
+        src: /home/ansible1/node-exporter/node-script.sh
+        dest: /tmp/
+    - name: Execute script with shell
+      shell: sh /tmp/node-script.sh
+      args:
+        chdir: /tmp/
