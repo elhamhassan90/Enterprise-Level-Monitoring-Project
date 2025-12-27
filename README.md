@@ -3,7 +3,7 @@ Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Expor
 
 ## Architecture
 
-Our monitoring project consists of the following virtual machines (VMs) and their roles:
+My monitoring project consists of the following virtual machines (VMs) and their roles:
 
 - **VM1 (Control)** [192.168.142.222] — Ansible controller for managing Linux & Windows nodes.
 - **VM2 (AD / DC + SMTP)** [192.168.142.100] — Windows Server running Active Directory + DNS (Domain Controller) and SMTP server for email alerts.
@@ -260,34 +260,8 @@ su - ansible1
 ssh-keygen -t rsa -b 4096
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-In this environment, Linux hosts are not automatically registered in DNS.
-To avoid unnecessary DNS changes and approval workflows, hostname resolution
-is handled locally using /etc/hosts, while Ansible inventory relies on hostnames only.
+In this environment, Linux hosts are not automatically registered in DNS.  
+To avoid unnecessary DNS changes and approval workflows, hostname resolution is handled locally using `/etc/hosts`, while the Ansible inventory relies on hostnames only.
 
 ```
 sudo nano /etc/hosts
@@ -304,19 +278,20 @@ ansible -m ping linux_nodes    #for test
 #pywinrm install (package requird for linux to deal with windows)
 sudo apt install python3-pip -y
 ```
-as serevr is **ofline** you can download PyWinRM and its dependencies on a device with internet access, then transfer and install it on the offline server.
+As the server is **offline**, you can download PyWinRM and its dependencies on a device with internet access, then transfer and install them on the offline server.  
+So on your online device, do:
 
-so on your online device
 ```
 mkdir pywinrm_offline   # Create a folder to store PyWinRM packages
 cd pywinrm_offline
 pip download pywinrm    # Download PyWinRM and its dependencies
 scp *.whl ansible1@192.168.142.222:/tmp/pywinrm_offline/          # Transfer all downloaded files to the offline server
 ```
+
 On the offline Ansible control server:
+
 ```
 cd /tmp/pywinrm_offline
-
 pip install --user --no-index --find-links=. pywinrm   #--no-index option tells pip to avoid looking online, and --find-links= points to the local folder containing the packages.
 pip show pywinrm | grep Version
 ```
@@ -326,7 +301,8 @@ pip show pywinrm | grep Version
 This project keeps **Linux and Windows inventories separate** for clarity and security.
 
 ### Create a dedicated folder for Windows inventory
-On your Ansible control server, create a new folder for all Windows hosts:
+On your Ansible control server, create a new folder specifically for all Windows hosts:
+
 ```
 su - ansible1
 cd
@@ -334,9 +310,11 @@ mkdir windows-servers
 cd windows-servers
 
 ```
+
 ### Create a Windows Inventory File
 
-Inside windows-servers, create your inventory file, e.g., inventory.ini:
+Inside the `windows-servers` folder, create your inventory file, e.g., `inventory.ini`:
+
 ```
 nano inventory.ini
 ===
@@ -355,30 +333,35 @@ ansible_winrm_transport=ntlm
 winsrv1 ansible_host=192.168.142.150
 ===
 ```
-
-Sensitive credentials like ansible_password are referenced via Ansible Vault.
+Sensitive credentials like `ansible_password` are referenced via Ansible Vault.  
 
 This ensures no plain passwords are stored in the inventory.
 
 ## Handling Vault Password: Create, Use, and Secure
 
-This project uses Ansible Vault to protect sensitive data and credentials.
-Follow these practical steps to create a vault password file, configure ansible.cfg, and run playbooks safely.
+This project uses Ansible Vault to protect sensitive data and credentials.  
+Follow these practical steps to create a vault password file, configure `ansible.cfg`, and run playbooks safely.
 
-Step 1: Create a Vault Password File
-### Create a file containing only the vault password (replace <your-password>)
+### Step 1: Create a Vault Password File
+Create a file containing only the vault password (replace `<your-password>`):
+
 ```
 echo '<your-password>' > /home/ansible1/windows-servers/.vault_pass.txt
 ```
+#### Restrict File Permissions
 
-### Restrict file permissions so only the Ansible user can read it
+Restrict file permissions so only the Ansible user can read it:
+
 ```
 chmod 600 /home/ansible1/windows-servers/.vault_pass.txt
 ```
 
-Step 2: Configure Ansible to Use the Vault Password File
+### Step 2: Configure Ansible to Use the Vault Password File
 
-In your project’s ansible.cfg (or create one inside windows-servers), add:
+Update your `ansible.cfg` to reference the vault password file. This ensures that playbooks can be run without manually entering the vault password each time.
+
+In your project’s ansible.cfg (or create one inside `windows-servers`), add:
+
 ```
 nano /home/ansible1/windows-servers/ansible.cfg
 ===
@@ -387,22 +370,28 @@ vault_password_file = /home/ansible1/windows-servers/.vault_pass.txt
 inventory = /home/ansible1/windows-servers/inventory.ini
 ===
 ```
-Step 3: Create or Edit Vaulted Files
-### Create a new vaulted file for storing credentials
+
+### Step 3: Create or Edit Vaulted Files
+
+Create a new vaulted file for storing credentials. This ensures sensitive data like passwords and API keys are encrypted and protected.
+
 ```
 ansible-vault create /home/ansible1/windows-servers/group_vars/all/vault.yml
 ===
 ansible_password: "DOMAIN_USER_REAL_PASSWORD"
 ===
 ```
-### Edit an existing vaulted file
+#### Edit an Existing Vaulted File
+
+To update or modify an existing vaulted file, use Ansible Vault’s edit command. This allows you to securely make changes without exposing sensitive information.
+
 ```
 ansible-vault edit /home/ansible1/windows-servers/group_vars/all/vault.yml
 ```
+#### Reference Vaulted Credentials in Inventory
 
-Store sensitive data like ansible_password in these vaulted files.
+Store sensitive data like `ansible_password` in vaulted files, and reference them in your inventory using `{{ ansible_password }}` to keep credentials secure and avoid plain-text exposure.
 
-Reference them in your inventory using {{ ansible_password }}
 ```
 ansible windows_nodes -m win_ping --ask-vault-pass #for_test
 ```
