@@ -74,32 +74,33 @@ Our monitoring project consists of the following virtual machines (VMs) and thei
 
 > ⚠️ **Note:** After applying this GPO, the `ansible` user will **not** be able to log in locally or via RDP on Windows servers. This ensures the user is restricted to remote automation via Ansible only.
 
+## Preparing Linux VMs
 
-**Preparing Linux Vms**
-## 🔧 Preparing the Linux VMs Environment
+### 🔧 Preparing the Linux VMs Environment
 
-Before configuring Ansible, each Linux VM is joined to the Active Directory domain.
-This step is critical for several reasons:
+Before configuring Ansible, each Linux VM is **joined to the Active Directory domain**. This step is crucial for several reasons:
 
-- Centralized identity management:
-  Joining the Linux nodes to the domain allows all authentication to be handled by Active Directory. This gives the environment the same level of identity governance used in real enterprise infrastructures.
+- **Centralized Identity Management**:  
+  Joining Linux nodes to the domain allows all authentication to be handled by Active Directory, providing enterprise-level identity governance.
 
-- Consistent hostname resolution:
-  Once the Linux VMs become domain members, every node is automatically registered in the domain DNS. This allows Ansible to communicate with the servers using their hostnames instead of IPs, which is far more   stable and scalable.
+- **Consistent Hostname Resolution**:  
+  Once the Linux VMs are domain members, each node is automatically registered in the domain DNS. Ansible can then communicate using hostnames instead of IPs, which is more stable and scalable.
 
-- Unified access control:
-  By joining to AD, we can apply domain-level policies to Linux machines (sudo mappings, SSH access rules, service accounts), ensuring the same access standards across Windows and Linux.
+- **Unified Access Control**:  
+  Domain-level policies (sudo mappings, SSH access rules, service accounts) can be applied to Linux machines, ensuring consistent access standards across both Windows and Linux.
 
-- Better maintainability & clean inventory:
-  Ansible’s inventory becomes clean and simple: only server names—no IPs, no hard-coded credentials.
-  
+- **Better Maintainability & Clean Inventory**:  
+  Ansible inventory becomes simplified: only server names are required—no IPs or hard-coded credentials.
+
+Example inventory:
+
 Example:
 ```
 [linux_nodes]
 node1
 node2
 ```
-This approach mirrors how large organizations manage hybrid Linux/Windows fleets, ensuring reliability, security, and easier long-term automation.
+> This setup mirrors how large enterprises manage hybrid Linux/Windows environments, ensuring reliability, security, and easier long-term automation.
 
 ### 🔹 Preparing Linux Server for Domain Join (Offline Environment)
 
