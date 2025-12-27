@@ -392,44 +392,53 @@ ansible-vault edit /home/ansible1/windows-servers/group_vars/all/vault.yml
 
 Store sensitive data like `ansible_password` in vaulted files, and reference them in your inventory using `{{ ansible_password }}` to keep credentials secure and avoid plain-text exposure.
 
+### Step 4: Testing Ansible Connectivity ✅
+
+Before running playbooks, you should test that the Ansible control server can communicate with both Linux and Windows target servers.
+
+- **Test Linux nodes:**
+```bash
+ansible -m ping linux_nodes
 ```
-ansible windows_nodes -m win_ping --ask-vault-pass #for_test
+- **Test Linux nodes:**
+```
+ansible -m win_ping windows_nodes -i windows-servers/inventory.ini --ask-vault-pass
 ```
 
 ![Ping Test Succeeded](images/PingTest.png)
 
 
+### 💻 Installing Prometheus on Linux VM
 
-
-
-
-
-
-
-to install prometheus on linux vm 
+This section describes the steps to install and configure **Prometheus** on a Linux virtual machine. It ensures that the monitoring server is ready to scrape metrics from all target nodes.
+on linux server do :
 ```
 sudo useradd --no-create-home --shell /bin/false prometheus
 sudo mkdir /etc/prometheus
 sudo mkdir /var/lib/prometheus
 sudo chown prometheus:prometheus /var/lib/prometheus
+```
+#### 📦 Installing Prometheus (Offline Method)
 
+As the server is **offline**, download the Prometheus package on a device with internet access, then transfer it to the offline server. On your online device, run:
+
+```
 cd /tmp/
 wget https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz
--------------------------------------------------------------------------------------------------------
-#or you can download it from 
-https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz
-#and then transfer it to the server 
---------------------------------------------------------------------------------------------------------
+```
+Alternatively, you can download Prometheus directly from its official release page:  
+https://github.com/prometheus/prometheus/releases/download/v2.35.0/prometheus-2.35.0.linux-amd64.tar.gz  
 
+After transferring the Prometheus package to the offline server, run:
+
+```
 tar -xvf prometheus-2.35.0.linux-amd64.tar.gz
 cd prometheus-2.35.0.linux-amd64/
-
 sudo mv console* /etc/prometheus 
 sudo mv prometheus.yml /etc/prometheus
 sudo chown -R prometheus:prometheus /etc/prometheus
 sudo mv prometheus /usr/local/bin/
 sudo chown prometheus:prometheus /usr/local/bin/prometheus
-
 sudo vi /etc/systemd/system/prometheus.service
 ============================================================
 [Unit]
@@ -458,7 +467,6 @@ sudo setenforce 1
 ###open-needed-port-9090
 sudo systemctl status prometheus.servicesudo firewall-cmd --add-port=9090/tcp --permanent
 sudo firewall-cmd --reload
-
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus
 sudo systemctl start prometheus
@@ -468,10 +476,16 @@ sudo systemctl status prometheus
 ```
 ![Prometheus Test Succeeded](images/prometheus_succeedded.png)
 
-To Install Grafana follow this steps 
-download grafana rpm package for redhat and centos servers form 
-https://dl.grafana.com/grafana-enterprise/release/12.3.1/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
-and transfer it to your server then to the path /tmp/
+
+### 💻 Installing Grafana on the same Linux VM running Prometheus
+
+To install Grafana, follow the steps below:
+
+1. Download the **Grafana Enterprise RPM package** for RedHat/CentOS from:  
+   https://dl.grafana.com/grafana-enterprise/release/12.3.1/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
+
+2. Transfer the downloaded file to your server — preferably to the `/tmp/` directory.
+
 ```
 cd /tmp/ #the offline package must be located to any path and go to that path and use rpm to install from a file
 sudo rpm --install --verbose -h /tmp/grafana-enterprise_12.3.1_20271043721_linux_amd64.rpm
@@ -488,10 +502,20 @@ sudo /bin/systemctl start grafana-server.service
 #http:192.168.142.230:3000    #for test grafana write this ip on the browser of any server joined the domain the default username:admin password:admin
 
 ```
-#### To install windows_exporter on windows servers via master ansible server by using ansible playbook
-firstly on your online device download **windows_exporter-0.25.0-amd64.msi** from https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-amd64.msi 
-and transfer it to the server as it is offline and use this 
-**/home/ansible1/windows-servers/setup-we.yaml** playbook to install it to windows servers
+#### 📦 Installing windows_exporter on Windows Servers via Ansible
+
+To install **windows_exporter** on Windows machines using Ansible:
+
+1. On an online computer, download the installer file:  
+   **windows_exporter-0.25.0-amd64.msi**  
+   https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-amd64.msi
+
+2. Since the servers are offline, transfer the MSI file to your Ansible control server.
+
+3. Use the playbook located at:  
+   **/home/ansible1/windows-servers/setup-we.yaml**  
+   to deploy and install *windows_exporter* on all Windows hosts.
+
 ```
 - name: Simple MSI Installation from C:\
   hosts: all
@@ -555,9 +579,14 @@ and transfer it to the server as it is offline and use this
       debug:
         var: installation.stdout_lines
 ```
-##### Note that you have to install windows_exporter-0.25.0-amd64.msi on domain controller (pdc.iti.local) server mannually
-#### open port 9182 on all windows servers for prometheus to scrape metrics from windows servers 
-open powershell as administrator and write :
+
+##### ⚠️ Important Notes
+
+- You must install **windows_exporter-0.25.0-amd64.msi** manually on the Domain Controller (**pdc.iti.local**).
+- Ensure **port 9182** is open on all Windows servers so Prometheus can scrape metrics.
+
+To open the port, run the following in **PowerShell as Administrator**:
+
 ```
 New-NetFirewallRule `
   -DisplayName "Prometheus Only 9182" `
@@ -567,10 +596,25 @@ New-NetFirewallRule `
   -RemoteAddress 192.168.142.230 `
   -Action Allow
 ```
-#### To install node-exporter on linux servers via master ansible server by using ansible playbook
-firstly on your online device download **node_exporter-1.3.1.linux-amd64.tar.gz** from https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
-and transfer it to the server as it is  offline and use this **/home/ansible1/node-exporter/setup-ne.yaml** playbook that runs a shell script to install it to linux servers
-this is /home/ansible1/node-exporter/setup-ne.yaml 
+#### 🐧 Installing Node Exporter on Linux Servers via Ansible
+
+To install **node_exporter**, download the package on an online machine, then transfer it to the offline server:
+
+- Download: **node_exporter-1.3.1.linux-amd64.tar.gz**  
+  https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
+
+After transferring the file to the server, use the playbook:
+
+📌 `/home/ansible1/node-exporter/setup-ne.yaml`
+
+This playbook runs a shell script that installs Node Exporter on all Linux servers.
+
+##### 📂 node-exporter Directory Content
+
+The following files exist inside `/home/ansible1/node-exporter/`:
+
+1. `setup-ne.yaml` — **This is the Ansible Playbook** responsible for installing and configuring Node Exporter on Linux servers.
+
 ```
 - name: installing node-exporter for linux servers for monitoring
   hosts: all
@@ -589,7 +633,9 @@ this is /home/ansible1/node-exporter/setup-ne.yaml
       args:
         chdir: /tmp/
 ```
-and this the /home/ansible1/node-exporter/ content
+
+2. `node-script.sh` — **This is the Shell Script** executed by the playbook to perform the installation steps.
+
 ```
 sudo useradd --no-create-home --shell /bin/false node_exporter
 
@@ -622,8 +668,12 @@ sudo systemctl enable node_exporter
 
 echo "Node Exporter has been installed and started."
 ```
-##### Note that you have to install node_exporter-1.3.1.linux-amd64.tar.gz on master ansible server mannually
-#### open port 9100 on all LINUX servers for prometheus to scrape metrics from windows servers
+##### 📌 Note  
+You must install `node_exporter-1.3.1.linux-amd64.tar.gz` **manually on the Ansible Master server**.
+
+#### 🔓 Open Port 9100 on all Linux servers for Prometheus scraping  
+Run the following commands on each Linux node:
+
 ```
 sudo firewall-cmd --zone=public --add-port=9100/tcp --permanent
 sudo firewall-cmd --reload
