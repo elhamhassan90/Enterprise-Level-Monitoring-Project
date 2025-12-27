@@ -779,3 +779,39 @@ These emails confirm that the configured alerts (CPU, memory, and disk usage) ar
 ![Alert Email 1](images/alert_email1.png)
 ![Alert Email 2](images/alert_email2.png)
 
+### 📊 Monitoring Dashboards
+
+As part of this project, several **Grafana dashboards** were created to visualize and analyze system performance metrics in a clear and organized manner.  
+
+These dashboards help to:
+
+- Monitor **CPU, memory, and disk usage** for all Linux and Windows servers.  
+- Quickly identify performance bottlenecks or resource shortages.  
+- Generate **tabular reports** for detailed system analysis, including metrics for each server’s CPU, memory, and storage usage (C: drive, / mount, etc.).  
+
+#### Examples of Dashboards:
+
+1. **Linux Servers Dashboard** – Displays key metrics of all Linux nodes in a structured format, including CPU utilization, memory consumption, and filesystem usage.  
+   ![Linux Dashboard](images/linux_dashboard.png)
+
+2. **Windows Servers Dashboard** – Shows performance data for all Windows servers, providing insights into CPU load, memory usage, and C: drive capacity.  
+   ![Windows Dashboard](images/windows_dashboard.png)
+
+These dashboards provide a **comprehensive overview** of the entire infrastructure, enabling proactive monitoring and easier reporting.
+
+#### System Reports Tables
+
+In addition to visual dashboards, Grafana dashboards include **tabular panels** to generate detailed reports for system metrics.  
+These tables allow you to view, sort, and analyze metrics for each server in a structured format:
+
+- CPU usage
+- Memory usage
+- Disk usage (/ or C: drives)
+- Status of Linux and Windows nodes
+
+Here’s an example of how the report tables look:
+
+![System Reports Tables](images/system_reports_tables1.png)
+![System Reports Tables](images/system_reports_tables2.png)
+
+These tables provide a clear and concise way to **export system data**, enabling detailed analysis and better decision-making for infrastructure management.
