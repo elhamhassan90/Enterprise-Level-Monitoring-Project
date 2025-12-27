@@ -819,8 +819,8 @@ These tables provide a clear and concise way to **export system data**, enabling
 
 ## 👩‍💻 Author
 **Elham Hassan**  
-🔧 DevOps Enthusiast | System Admin | Automation Engineer | IT Support Network Egineer 
-🚀 Built locally on CentOS and Docker  
+🔧 DevOps Enthusiast | System Admin | Automation Engineer | Cloud/DevOps Egineer 
+🚀 Built locally on CentOS and Windows Vms
 📬 GitHub: https://github.com/elhamhassan90  
 🔗 LinkedIn: www.linkedin.com/in/elham-hasan-6b029433a  
 ---
