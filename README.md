@@ -474,7 +474,7 @@ sudo systemctl status prometheus
 
 ## http:192.168.142.230:9090 #for_test_on_any_browser
 ```
-![Prometheus Test Succeeded](images/prometheus_succeedded.png)
+![Prometheus Test Succeeded](images/prometheus-succeeded.png)
 
 
 ### 💻 Installing Grafana on the same Linux VM running Prometheus
@@ -500,8 +500,8 @@ sudo /bin/systemctl enable grafana-server.service
 sudo /bin/systemctl start grafana-server.service
 
 #http:192.168.142.230:3000    #for test grafana write this ip on the browser of any server joined the domain the default username:admin password:admin
-
 ```
+
 #### 📦 Installing windows_exporter on Windows Servers via Ansible
 
 To install **windows_exporter** on Windows machines using Ansible:
@@ -579,6 +579,18 @@ To install **windows_exporter** on Windows machines using Ansible:
       debug:
         var: installation.stdout_lines
 ```
+#### 🖥️ Run the Windows Exporter Playbook from the Master Ansible Server
+
+On the Master Ansible Server, execute the following command to install Windows Exporter on all target Windows nodes:
+
+```
+cd /home/ansible1/windows-servers
+ansible-playbook setup-we.yaml --ask-vault-password
+```
+
+This command will prompt you for the Vault password to securely access credentials stored in the vaulted files.
+
+![Windows-exportrer Installation by Ansible-playbook via winrm Succeeded](images/setup-we.png)
 
 ##### ⚠️ Important Notes
 
@@ -668,6 +680,16 @@ sudo systemctl enable node_exporter
 
 echo "Node Exporter has been installed and started."
 ```
+
+#### 🐧 Run the Node Exporter Playbook from the Master Ansible Server
+
+To install Node Exporter on all target Linux servers, execute the following command on the Master Ansible Server:
+```
+ansible-playbook /home/ansible1/node-exporter/setup-ne.yaml --ask-vault-password
+```
+
+This command runs the Ansible playbook which, in turn, executes the included shell script to install Node Exporter on all Linux nodes. You will be prompted for the Vault password to securely access any stored credentials.
+
 ##### 📌 Note  
 You must install `node_exporter-1.3.1.linux-amd64.tar.gz` **manually on the Ansible Master server**.
 
@@ -679,3 +701,9 @@ sudo firewall-cmd --zone=public --add-port=9100/tcp --permanent
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-ports
 ```
+
+![Installation of Windows-exportrer and node-exporter on all servers Succeeded](images/all-exporters-installed.png)
+
+
+
+
