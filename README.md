@@ -1,5 +1,13 @@
-# Enterprise-Level-Monitoring-Project
-Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts 
+# Enterprise-Level Monitoring Project
+
+## 📝 Project Overview
+
+This project implements an enterprise-level monitoring solution using **Prometheus** and **Grafana**, fully integrated with **Active Directory** and automated via **Ansible**.  
+It supports both **Linux** and **Windows** servers in an offline environment, ensuring centralized management, security, and scalability.  
+
+Additionally, the system is configured to send **alerts via email** using an **SMTP server installed on the Domain Controller (DC)**. This enables administrators to receive notifications for critical events on monitored servers in real-time.
+
+**Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts**
 
 ## Architecture
 
