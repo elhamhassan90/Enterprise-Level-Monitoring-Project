@@ -1,28 +1,17 @@
 # Enterprise-Level-Monitoring-Project
-Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation
+Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts 
 
-## Architecure
- VM1 → Windows Server (192.168.142.100)
-       + Active Directory (Domain Controller) 
-       + Windows Exporter (via Ansible)
+## Architecure (what we have)
 
- VM2 → Linux Server (192.168.142.222)
-       + Ansible
-       + Prometheus
-       + Grafana
- 
- VM3 → Linux Server 
-       + Node Exporter (via Ansible)
-
-## Quick architecture (what we have)
-
-VM1 (Control) [192.168.142.222] — Ansible controller + Prometheus + Grafana
+VM1 (Control) [192.168.142.222] — Ansible controller 
 
 VM2 (AD / DC)[192.168.142.100] — Windows Server running Active Directory + DNS (domain controller) 
 
 VM3 (Linux node) [192.168.142.225] — target Linux (Node Exporter) — joined to AD
 
 VM4 (Windows node) [192.168.142.150] — target Windows (windows_exporter) — joined to AD
+
+VM5 (Monitor) [192.168.142.230] —  Prometheus + Grafana
 
 ## Preparing Environment
 **Preparing Windows Vms**
