@@ -133,52 +133,12 @@ In short:
 - The server is offline → `dnf` cannot access external repos  
 - Mount the OS ISO → all required packages are available locally  
 - Create a Local Repo pointing to the ISO → `dnf` installs packages from it
-
-#### Enable Local Repositories
-
-To activate the local repositories from the mounted ISO, run:
-
-```bash
-dnf config-manager --enable Local-BaseOS Local-AppStream
-
-HELLO
-```
-dnf config-manager --enable Local-BaseOS Local-AppStream
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**
-Before performing the domain join, I also need to change the server hostname.
-This is important because the hostname is what gets registered inside **DNS** and inside **Active Directory**, so it must be correct **before** joining the domain.
-
-I also need to configure the **time, timezone, and NTP** properly.
-Kerberos authentication is very strict with time, and the domain join will fail if the server time is not synchronized with the Domain Controller.
-So the time must be fully correct before running the join command.
-**
 ```
 ###mount iso
 -----------------------------------
 df -h
 mount /dev/sr0 /media/
 ls /media
-
 
 ====================================
 ##create local repo
@@ -200,9 +160,24 @@ gpgcheck=0
 
 ==
 yum repolist
+dnf config-manager --enable Local-BaseOS Local-AppStream #To activate the local repositories from the mounted ISO
 #dnf config-manager --disable baseos appstream extras-common
+```
 
-======================================
+
+#### Prepare Hostname, Time, and NTP Before Domain Join
+
+Before performing the domain join, it is important to:
+
+1. **Set the correct hostname**  
+   The hostname will be registered in **DNS** and **Active Directory**, so it must be accurate **before** joining the domain.
+
+2. **Configure time, timezone, and NTP**  
+   Kerberos authentication is very strict with time.  
+   If the server time is not synchronized with the Domain Controller, the domain join will fail.  
+   Ensure the server time is fully correct before running the join command.
+
+```
 ##change hostname
 -------------------------------------
 hostnamectl set-hostname Prometheus
@@ -225,8 +200,6 @@ timedatectl
 chronyc sources
 timedatectl
 ```
-
-
 
 
 then the server is ready to join to the domain iti.local
