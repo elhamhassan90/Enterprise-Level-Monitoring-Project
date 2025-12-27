@@ -63,6 +63,35 @@ Computer Configuration → Policies → Windows Settings → Security Settings �
 ---
 - after applying the group policy the ansible user cannot login the windows servers
 
+------------------------------------
+## Preparing Environment
+
+### Preparing Windows VMs
+
+1. **Active Directory Setup & Domain Join**
+   - Install Active Directory on VM2 (AD / DC).
+   - Join all Windows servers to the domain `ITI.LOCAL`.
+   - Create a domain user `ansible` which will be used by the Ansible control server.
+   - Ensure Ansible connects to Windows servers using **WinRM** (default port 5985 must be open).
+   - After setup, the `ansible` user can log in to all Windows servers joined to the domain.
+
+2. **GPO Setup for Ansible User**
+   - Create an **OU** called `All-Windows-Servers`.
+   - Create a **GPO** named `ansible-gpo` and link it to this OU.
+   - GPO configuration steps:
+     1. **Add Ansible user to local Administrators group**  
+        `Computer Configuration → Preferences → Control Panel Settings → Local Users and Groups → New → Local Group (Administrators)`  
+        *Add the `ansible` user to this group.*
+     2. **Deny local login**  
+        `Computer Configuration → Policies → Windows Settings → Security Settings → Local Policies → User Rights Assignment → Deny log on locally`  
+        *Add the `ansible` user to this policy.*
+     3. **Deny RDP login**  
+        `Computer Configuration → Policies → Windows Settings → Security Settings → Local Policies → User Rights Assignment → Deny log on through Remote Desktop Services`  
+        *Add the `ansible` user to this policy.*
+
+> ⚠️ **Note:** After applying this GPO, the `ansible` user will **not** be able to log in locally or via RDP on Windows servers. This ensures the user is restricted to remote automation via Ansible only.
+
+
 **Preparing Linux Vms**
 ## 🔧 Preparing the Linux VMs Environment
 
