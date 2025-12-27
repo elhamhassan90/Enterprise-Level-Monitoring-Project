@@ -11,7 +11,6 @@ Our monitoring project consists of the following virtual machines (VMs) and thei
 - **VM4 (Windows node)** [192.168.142.150] — Target Windows node with Windows Exporter installed, joined to the AD domain.
 - **VM5 (Monitor)** [192.168.142.230] — Monitoring server running Prometheus + Grafana.
 
-```
 > 💡 **Topology Diagram (Visual + Functional)**
 
                        +----------------------+
@@ -46,7 +45,6 @@ Legend:
    * Prometheus on VM5 scrapes metrics from all target nodes
    * Domain Controller (VM2) provides AD authentication for all nodes
 
-```
 ## Preparing Environment
 **Preparing Windows Vms**
 Active Directory installatiion, joining windows server to domain (ITI.LOCAL) and creating domain user ansible   
