@@ -453,8 +453,74 @@ sudo /bin/systemctl start grafana-server.service
 #http:192.168.142.230:3000    #for test grafana write this ip on the browser of any server joined the domain the default username:admin password:admin
 
 ```
+#### To install windows_exporter on windows servers via master ansible server by using ansible playbook
+firstly on your online device download **windows_exporter-0.25.0-amd64.msi** from https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-amd64.msi 
+and transfer it to the server as it is  offline and use this **/home/ansible1/windows-servers/setup-we.yaml** playbook to install it to windows servers
+```
+- name: Simple MSI Installation from C:\
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Copy MSI file to Windows client C:\ 
+      win_copy:
+        src: /home/ansible1/windows-servers/windows_exporter-0.25.0-amd64.msi
+        dest: C:\windows_exporter-0.25.0-amd64.msi
+        force: yes
+        backup: yes
+      register: copy_operation
 
-open port 9182 on windows servers for prometheus to scrape metrics from windows servers 
+    - name: Install Windows Exporter from C:\
+      win_shell: |
+        # Verify MSI file exists
+        $msiPath = "C:\windows_exporter-0.25.0-amd64.msi"
+        if (-not (Test-Path $msiPath)) {
+            Write-Error "MSI file not found at $msiPath"
+            exit 1
+        }
+        
+        Write-Host "Installing Windows Exporter from $msiPath"
+        
+        # Install the MSI
+        $process = Start-Process "msiexec" -ArgumentList @(
+            "/i", "C:\windows_exporter-0.25.0-amd64.msi",
+            "/quiet",
+            "/norestart",
+            "ENABLED_COLLECTORS=cpu,memory,net,service,process,logical_disk,os,iis",
+            "LISTEN_PORT=9182"
+        ) -Wait -PassThru -NoNewWindow
+        
+        Write-Host "Installation completed with exit code: $($process.ExitCode)"
+        
+        # Wait and start service
+        Start-Sleep -Seconds 10
+        Start-Service -Name "windows_exporter" -ErrorAction SilentlyContinue
+        
+        # Configure firewall
+        $firewall = Get-NetFirewallRule -DisplayName "Windows Exporter" -ErrorAction SilentlyContinue
+        if (-not $firewall) {
+            New-NetFirewallRule -DisplayName "Windows Exporter" -Direction Inbound -Protocol TCP -LocalPort 9182 -Action Allow
+        }
+        
+        # Verify installation
+        $service = Get-Service -Name "windows_exporter" -ErrorAction SilentlyContinue
+        if ($service -and $service.Status -eq 'Running') {
+            Write-Host "SUCCESS: Windows Exporter installed and running"
+            exit 0
+        } else {
+            Write-Error "Installation verification failed"
+            exit 1
+        }
+      args:
+        executable: powershell
+      register: installation
+
+    - name: Show installation result
+      debug:
+        var: installation.stdout_lines
+```
+##### Note that you have to install windows_exporter-0.25.0-amd64.msi on domain controller (pdc.iti.local) server mannually
+#### open port 9182 on all windows servers for prometheus to scrape metrics from windows servers 
 open powershell as administrator and write :
 ```
 New-NetFirewallRule `
@@ -465,12 +531,58 @@ New-NetFirewallRule `
   -RemoteAddress 192.168.142.230 `
   -Action Allow
 ```
+#### To install node-exporter on linux servers via master ansible server by using ansible playbook
+firstly on your online device download **node_exporter-1.3.1.linux-amd64.tar.gz** from https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
+and transfer it to the server as it is  offline and use this **/home/ansible1/node-exporter/setup-ne.yaml** playbook that runs a shell script to install it to linux servers
+this is /home/ansible1/node-exporter/setup-ne.yaml 
+```
+- name: installing node-exporter for linux servers for monitoring
+  hosts: all
+  tasks:
+    - name: Copy tar file from ansible to worker
+      copy:
+        src: /home/ansible1/node-exporter/node_exporter-1.3.1.linux-amd64.tar.gz
+        dest: /tmp/
 
-windows exporter   install  
+    - name: Copy script file  to worker
+      copy:
+        src: /home/ansible1/node-exporter/node-script.sh
+        dest: /tmp/
+    - name: Execute script with shell
+      shell: sh /tmp/node-script.sh
+      args:
+        chdir: /tmp/
+```
+and this the /home/ansible1/node-exporter/ content
+```
+sudo useradd --no-create-home --shell /bin/false node_exporter
 
-windows_exporter-0.31.3-amd64.msi
-https://github.com/prometheus-community/windows_exporter/releases/download/v0.31.3/windows_exporter-0.31.3-amd64.msi
+cd /tmp/
+tar -xvf node_exporter-1.3.1.linux-amd64.tar.gz
+cd node_exporter-1.3.1.linux-amd64
 
-sudo mkdir -p /opt/windows_exporter
-sudo mv /root/windows_exporter-0.31.3-amd64.msi /opt/windows_exporter/windows_exporter.msi
+sudo mv node_exporter /usr/local/bin/
+sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
 
+sudo tee /etc/systemd/system/node_exporter.service <<EOF
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo restorecon -v /usr/local/bin/node_exporter
+sudo systemctl daemon-reload
+sudo systemctl start node_exporter
+sudo systemctl enable node_exporter
+
+echo "Node Exporter has been installed and started."
+```
