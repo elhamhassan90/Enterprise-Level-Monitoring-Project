@@ -1,4 +1,14 @@
 # Enterprise-Level Monitoring Project
+## 📽 Project Demo (Video)
+
+Watch the project in action:
+
+▶ **[Click to Play Demo](Video_showing_project_working.mp4)**
+
+Or view it directly below:
+
+<video src="Video_showing_project_working.mp4" controls width="700"></video>
+
 
 ## 📝 Project Overview
 
