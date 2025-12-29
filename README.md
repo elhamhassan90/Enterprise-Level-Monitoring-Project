@@ -9,6 +9,11 @@ Watch the Monitoring Project working live in action:
   <source src="https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/Video_showing_project_working.mp4" type="video/mp4">
 </video>
 
+<video controls width="700">
+  <source src="https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/blob/main/Video_showing_project_working.mp4" type="video/mp4">
+</video>
+
+
 ---
 
 ## 📝 Project Overview
