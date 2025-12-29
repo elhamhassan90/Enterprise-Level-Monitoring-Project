@@ -9,6 +9,8 @@ Additionally, the system is configured to send **alerts via email** using an **S
 
 **Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts**
 
+---
+
 ## 🎥 Project Demo (Video)
 
 Watch the Monitoring Project working live in action:
@@ -62,6 +64,7 @@ My monitoring project consists of the following virtual machines (VMs) and their
    * Prometheus on VM5 scrapes metrics from all target nodes
    * Domain Controller (VM2) provides AD authentication and SMTP service for email alerts
 ```
+---
 
 ## Preparing Environment
 
@@ -824,6 +827,7 @@ Here’s an example of how the report tables look:
 
 These tables provide a clear and concise way to **export system data**, enabling detailed analysis and better decision-making for infrastructure management.
 
+---
 
 ## 👩‍💻 Author
 **Elham Hassan**  
