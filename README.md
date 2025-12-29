@@ -6,6 +6,19 @@ Watch the project in action:
 ▶ **[Click to Play Demo](Video_showing_project_working.mp4)**
 ▶ **[Click to Play Demo](https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/blob/main/Video_showing_project_working.mp4)** 
 
+## 📽 Project Demo (Video)
+
+Watch the project live:
+
+▶ **[Click to Play Demo](https://raw.githubusercontent.com/elhamhassan90/Enterprise-Level-Monitoring-Project/main/Video_showing_project_working.mp4)**
+
+---
+
+<video controls width="700">
+  <source src="https://raw.githubusercontent.com/elhamhassan90/Enterprise-Level-Monitoring-Project/main/media/project-demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 Or view it directly below:
 
 <video src="Video_showing_project_working.mp4" controls width="700"></video>
