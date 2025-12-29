@@ -1,20 +1,4 @@
 # Enterprise-Level Monitoring Project
-## 🎥 Project Demo (Video)
-
-Watch the Monitoring Project working live in action:
-
-▶ **[Click to Play Demo](Video_showing_project_working.mp4)**
-
-<video controls width="700">
-  <source src="https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/Video_showing_project_working.mp4" type="video/mp4">
-</video>
-
-<video controls width="700">
-  <source src="https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/blob/main/Video_showing_project_working.mp4" type="video/mp4">
-</video>
-
-
----
 
 ## 📝 Project Overview
 
@@ -24,6 +8,14 @@ It supports both **Linux** and **Windows** servers in an offline environment, en
 Additionally, the system is configured to send **alerts via email** using an **SMTP server installed on the Domain Controller (DC)**. This enables administrators to receive notifications for critical events on monitored servers in real-time.
 
 **Monitoring + AD Integration + Linux Domain Join + Windows Exporter + Linux Exporter + Ansible Automation + Email Alerts**
+
+## 🎥 Project Demo (Video)
+
+Watch the Monitoring Project working live in action:
+
+▶ **[Click to Play Demo](Video_showing_project_working.mp4)**
+
+---
 
 ## 🏛️ Architecture
 
