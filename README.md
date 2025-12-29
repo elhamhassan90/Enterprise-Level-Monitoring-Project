@@ -4,6 +4,7 @@
 Watch the project in action:
 
 ▶ **[Click to Play Demo](Video_showing_project_working.mp4)**
+▶ **[Click to Play Demo](https://github.com/elhamhassan90/Enterprise-Level-Monitoring-Project/blob/main/Video_showing_project_working.mp4)** 
 
 Or view it directly below:
 
